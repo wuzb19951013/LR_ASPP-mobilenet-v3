@@ -104,14 +104,14 @@ def seg_process(args, image, net):
 
 def camera_seg(args, net):
     # get a frame
-    i = 1
-    while i < 6:
-        path = "H:/dataset/new-dataset/testfront/image/b ("+str(i)+").JPG"
+    i = 2
+    while i < 4:
+        path = "./test/image/a ("+str(i)+").JPG"
         frame = cv2.imread(path)
         frame_seg = seg_process(args, frame, net)
         # show a frame
         cv2.imwrite(
-            "H:/dataset/new-dataset/"+str(i)+".png", frame_seg)
+            "./test/result/"+str(i)+".png", frame_seg)
         i = i + 1
 
 

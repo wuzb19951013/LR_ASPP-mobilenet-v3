@@ -1,4 +1,4 @@
-python train.py --dataDir=./data --testDir=./test --saveDir=./ckpt --trainData=human_matting_data --trainList=./data/train.txt --testList=./test/test.txt --load=human_matting --nThreads=4 --patch_size=320 --train_batch=8 --lr=1e-4 --lrdecayType=keep --nEpochs=200 --save_epoch=1 --finetuning
+python train.py --dataDir=./data --validDir=./valid --saveDir=./ckpt --trainData=human_matting_data --trainList=./data/train.txt --validList=./valid/valid.txt --load=human_matting --nThreads=4 --patch_size=320 --train_batch=8 --lr=1e-4 --lrdecayType=keep --nEpochs=200 --save_epoch=1 --finetuning
 
 test
 python test_camera.py --model ./ckpt/human_matting/model/model_obj.pth --size 320 

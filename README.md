@@ -3,7 +3,6 @@ mobilenet v3 中LR_ASPP的实现
 
 # Todo
 
-## 修改文件名称
 ## 撰写readme
 - 文件结构
 - 数据集

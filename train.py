@@ -21,7 +21,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Fast portrait matting !')
     parser.add_argument('--dataDir', default='./DATA/',
                         help='dataset directory')
-    parser.add_argument('--testDir', default='./TEST/',
+    parser.add_argument('--validDir', default='./VALID/',
                         help='evaluation directory')
 
     parser.add_argument('--saveDir', default='./ckpt', help='model save dir')
@@ -30,7 +30,7 @@ def get_args():
     parser.add_argument(
         '--trainList', default='./data/train.txt', help='train img ID')
     parser.add_argument(
-        '--testList', default='./test/test.txt', help='test img ID')
+        '--validList', default='./valid/valid.txt', help='valid img ID')
 
     parser.add_argument('--load', default='human_matting', help='save model')
 
@@ -171,12 +171,12 @@ def loss_function(args, img, trimap_pre, trimap_gt):
     return loss, L_t
 
 
-def eval_model(model, args, testloader, device, optimizer):
+def eval_model(model, args, validloader, device, optimizer):
     with torch.no_grad():
         loss_eval = 0
         model.eval()
 
-        for i, sample_batched in enumerate(testloader):
+        for i, sample_batched in enumerate(validloader):
             img, trimap_gt = sample_batched['image'], sample_batched['trimap']
             img, trimap_gt = img.to(device), trimap_gt.to(device)
             optimizer.zero_grad()
@@ -210,8 +210,8 @@ def main():
     train_data = getattr(dataset, args.trainData)(root_dir=args.dataDir,
                                                   imglist=args.trainList,
                                                   patch_size=args.patch_size)
-    test_data = getattr(dataset, args.trainData)(root_dir=args.testDir,
-                                                 imglist=args.testList,
+    valid_data = getattr(dataset, args.trainData)(root_dir=args.validDir,
+                                                 imglist=args.validList,
                                                  patch_size=args.patch_size)
     trainloader = DataLoader(train_data,
                              batch_size=args.train_batch,
@@ -219,7 +219,7 @@ def main():
                              shuffle=True,
                              num_workers=args.nThreads,
                              pin_memory=True)
-    testloader = DataLoader(test_data,
+    validloader = DataLoader(valid_data,
                             batch_size=args.train_batch,
                             drop_last=True,
                             shuffle=True,
@@ -271,7 +271,7 @@ def main():
             loss_ = loss_ / (i+1)
             L_cross_ = L_cross_ / (i+1)
 
-            eval_loss = eval_model(model, args, testloader, device, optimizer)
+            eval_loss = eval_model(model, args, validloader, device, optimizer)
 
             log = "[{} / {}] \tLr: {:.5f}\nloss: {:.5f}\tloss_t: {:.5f}\tloss_eval: {:.5f}\tloss_val: {:.5f}\t" \
                 .format(epoch, args.nEpochs,
